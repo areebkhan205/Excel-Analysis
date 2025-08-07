@@ -1,18 +1,19 @@
 import logo from '../assets/logo.png';
+
 function Nav() {
     return (
         <>
         <div className='w-full py-2  text-white'>
-            <nav className='flex items-center px-6 justify-between'> 
+            <nav className='flex items-center px-9  justify-between'> 
   <img className='h-[40px] w-[10px]' src={logo} alt="logo img" />
-<ul className='flex font-medium  items-center gap-[70px] justify-between'>
-<li>Home</li>
-<li>Services</li>
-<li>About</li>
+<ul className='hidden md:flex    cursor-pointer  font-Poppins  items-center gap-[170px] justify-between'>
+<li className='   hover:text-purple-400 transition-all duration-300 ease-in-ou hover:ease hover:scale-120'>Home</li>
+<li className='hover:text-purple-400 transition-all duration-300 ease-in-ou hover:ease hover:scale-120'>Services</li>
+<li className='hover:text-purple-400 transition-all duration-300 ease-in-ou hover:ease hover:scale-120'>About</li>
 </ul>
 
-<button className='bg-slate-400 p-[10px] cursor-pointer rounded-2xl'>
-    Sign Up
+<button className= 'bg-slate-600  font-medium shadow-4xl px-6  transition-all duration-300 ease-in-ou hover:ease hover:scale-120 p-[5px] cursor-pointer rounded-2xl'>
+    SignUp
 </button>
 
             </nav>
