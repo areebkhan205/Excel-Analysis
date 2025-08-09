@@ -24,7 +24,7 @@ function Nav() {
 
     return (
         <div className='w-full py-2 text-white'>
-            <nav className='flex items-center px-9  justify-evenly gap-[180px]'> 
+            <nav className='flex items-center px-9  justify-evenly gap-[0px]  md:gap-[180px]'> 
                 <img className='h-[40px] w-auto' src={logo} alt="logo img" />
 
                 <ul className='hidden md:flex cursor-pointer  font-Poppins items-center  gap-12  '>
