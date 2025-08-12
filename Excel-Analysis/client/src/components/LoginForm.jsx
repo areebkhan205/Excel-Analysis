@@ -35,10 +35,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center relative bottom-[99px] justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+    <div className="flex items-center relative bottom-[99px] justify-center min-h-screen text-white">
       <form
         onSubmit={handleLogin}
-        className="relative bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-96 border border-white/20"
+        className="relative bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-85 sm:w-96 border border-white/20"
       >
         {/* Futuristic Glow Effect */}
         <div className="absolute pointer-events-none  inset-0 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 opacity-20 blur-2xl"></div>

@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import mountain2 from "../assets/mountain-2.png";
 import { FlipWords } from "./FlipWords";
 export default function Home() {
-  const [fileName, setFileName] = useState("");
+
 
   return (
     <div
       className="relative min-h-screen bottom-[99px] flex flex-col items-center justify-center px-4 sm:px-6 text-white overflow-hidden"
-      style={{
+      style={{ 
         backgroundImage: `url(${mountain2})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundAttachment: "fixed",
+        // backgroundAttachment: "fixed",
         fontFamily: "'Inter', sans-serif",
+        
       }}
     >
       {/* Overlay */}
@@ -29,7 +30,7 @@ export default function Home() {
             fontSize: "clamp(1.8rem, 5vw, 3.5rem)", // fluid text scaling
           }}
         >
-          Turn Excel into <FlipWords words={["FAST","SMOOTH","MODERN"]} className="text-white text-4xl md:text-6xl"  />
+          Turn Excel <FlipWords words={["POWERFUL", "ELEGANT", "INTUITIVE"]} className="text-white text-4xl md:text-6xl"  />
         </h1> 
 
         <p
@@ -58,7 +59,8 @@ export default function Home() {
       </div>
 
       {/* Button */}
-      <button
+    <Link to="/services">
+    <button
         className="mt-6 relative sm:mt-10 px-6 sm:px-8 py-3 bottom-[90px] rounded-lg font-semibold 
         bg-gradient-to-r from-[#38e1ff] via-[#b855ff] to-[#ff9f40] 
         shadow-[0_0_25px_rgba(184,85,255,0.75)] border border-white/10
@@ -70,10 +72,11 @@ export default function Home() {
           fontSize: "clamp(0.95rem, 2.5vw, 1.25rem)",
         }}
         type="button"
-        onClick={() => alert("Feature coming soon!")}
       >
         Try it Now →
       </button>
+    </Link>
+      
     </div>
   );
 }
