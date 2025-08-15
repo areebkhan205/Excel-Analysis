@@ -1,12 +1,12 @@
 import fot from '../assets/thunder-svgrepo-com.svg';
 function Footer() {
   return (
-    <footer id="contact" className="relative bottom-0 ">
+    <footer id="contact" className="relative bottom-0  ">
       {/* Gradient Overlay */}
       <div className="absolute inset-1  bg-gradient-to-b from-transparent to-purple-900/30 "></div>
 
       {/* Footer Content */}
-      <div className="relative border-t border-gray-800/50 backdrop-blur-sm py-2 h-[101px]  w-[1227px] bg-black/50">
+      <div className="relative border-t border-gray-800/50 backdrop-blur-sm py-2 h-[101px]  w-[1457px] bg-black/50">
         <div className="container mx-auto px-4 py-0">
 
         

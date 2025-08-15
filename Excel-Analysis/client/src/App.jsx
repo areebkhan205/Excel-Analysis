@@ -1,11 +1,14 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import './App.css';
+import AdminDashboard from "./components/AdminDashboard";
+import Contact from "./components/Contact";
 import { File } from "./components/File";
 import Footer from './components/Footer';
 import Home from "./components/Home";
 import LoginPage from "./components/LoginForm";
 import Nav from './components/Nav';
 import SignupForm from "./components/SignupForm";
+
 
 function App() {
   return (
@@ -35,12 +38,16 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/services" element={<File />} />
-              <Route path="/about" element={<h1 className="text-white">About</h1>} />
+              <Route path="/about" element={<Contact/>}/>
               <Route path="/signup" element={<SignupForm />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/admin-dashboard" element={<AdminDashboard />} />
             </Routes>
           </main>
-          <Footer />
+          <div className="w-full"> 
+        <Footer />
+          </div>
+         
         </div>
       </div>
 

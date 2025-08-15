@@ -40,7 +40,7 @@ export default function SignUpPage() {
     <div className="flex items-center justify-center relative bottom-[99px] min-h-screen w-full p-4">
       <form
         onSubmit={handleSignUp}
-        className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-full max-w-md border border-white/20 animate-fadeIn"
+        className="bg-white/10 backdrop-blur-lg p-3 md:p-8 rounded-2xl shadow-2xl w-[300px] md:max-w-md md:w-[600px] border border-white/20 animate-fadeIn"
       >
         <h1 className="text-4xl font-bold mb-6 text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
           Create Account
@@ -97,4 +97,4 @@ export default function SignUpPage() {
       </form>
     </div>
   );
-}
+}    

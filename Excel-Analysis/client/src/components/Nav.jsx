@@ -24,13 +24,13 @@ function Nav() {
 
     return (
         <div className='w-full py-2 text-white'>
-            <nav className='flex items-center px-66 sm:px-9  justify-evenly gap-[0px]  md:gap-[180px]'> 
+            <nav className='flex items-center px-99 sm:px-9  justify-evenly gap-[0px]  md:gap-[180px]'> 
                 <img className='h-[40px] w-auto' src={logo} alt="logo img" />
 
                 <ul className='hidden md:flex cursor-pointer  font-Poppins items-center  gap-12  '>
                     <li className="transition-transform duration-200 ease-out hover:scale-130"><Link to="/">Home</Link></li>
                     <li className="transition-all hover:scale-120 delay-130"><Link to="/services">Services</Link></li>
-                    <li className="transition-all hover:scale-120 delay-140"><Link to="/about">About</Link></li>
+                    <li className="transition-all hover:scale-120 delay-140"><Link to="/about">Contact</Link></li>
 
          
                 </ul>

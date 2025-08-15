@@ -6,7 +6,7 @@ export default function Home() {
 
   return (
     <div
-      className="relative min-h-screen bottom-[99px] flex flex-col items-center justify-center px-4 sm:px-6 text-white overflow-hidden"
+      className="relative min-h-screen bottom-[99px] flex flex-col items-center justify-center max-w-full px-4 sm:px-6 text-white overflow-auto"
       style={{ 
         backgroundImage: `url(${mountain2})`,
         backgroundSize: "cover",
@@ -39,7 +39,7 @@ export default function Home() {
             color: "#f1f5f9",
             maxWidth: "650px",
             margin: "0 auto",
-            fontSize: "clamp(0.9rem, 2.5vw, 1.25rem)", // fluid paragraph size
+            fontSize: "clamp(0.9rem, 2.5vw, 1.25rem)", 
           }}
         >
           Upload spreadsheet and instantly 
@@ -50,7 +50,7 @@ export default function Home() {
             color: "#f1f5f9",
             maxWidth: "650px",
             margin: "0 auto",
-            fontSize: "clamp(0.9rem, 2.5vw, 1.25rem)", // fluid paragraph size
+            fontSize: "clamp(0.9rem, 2.5vw, 1.25rem)", 
           }}
         >
           get stunning charts,
@@ -58,7 +58,7 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Button */}
+      
     <Link to="/services">
     <button
         className="mt-6 relative sm:mt-10 px-6 sm:px-8 py-3 bottom-[90px] rounded-lg font-semibold 
