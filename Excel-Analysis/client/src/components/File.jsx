@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "chart.js";
 import { FileSpreadsheet, Upload, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bar, Line, Pie } from "react-chartjs-2";
 import * as XLSX from "xlsx";
 
@@ -37,6 +37,14 @@ export function File() {
   const [error, setError] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [chartData, setChartData] = useState(null);
+
+  // NEW: store parsed rows and columns so user can choose axes
+  const [rows, setRows] = useState([]);
+  const [columns, setColumns] = useState([]);
+  const [xCol, setXCol] = useState("");
+  const [yCol, setYCol] = useState("");
+  const [chartType, setChartType] = useState("All"); // Bar | Line | Pie | Doughnut | All
+
   const fileInputRef = useRef();
 
   const allowedTypes = [
@@ -60,6 +68,11 @@ export function File() {
     setFile(null);
     setError("");
     setChartData(null);
+    setRows([]);
+    setColumns([]);
+    setXCol("");
+    setYCol("");
+    setChartType("All");
   };
 
   const handleDrop = (e) => {
@@ -75,7 +88,7 @@ export function File() {
           const data = new Uint8Array(event.target.result);
           const workbook = XLSX.read(data, { type: "array" });
           const sheet = workbook.Sheets[workbook.SheetNames[0]];
-          const jsonData = XLSX.utils.sheet_to_json(sheet);
+          const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
           resolve(jsonData);
         } catch {
           reject("Error reading file");
@@ -85,16 +98,30 @@ export function File() {
     });
 
   const detectColumns = (rows) => {
-    const columns = Object.keys(rows[0]);
-    const labelCol = columns.find((col) => isNaN(Number(rows[0][col]))) || columns[0];
+    const cols = Object.keys(rows[0] ?? {});
+    // Prefer a text-like column for labels
+    const labelCol = cols.find((col) => isNaN(Number(rows[0][col]))) || cols[0];
+    // Prefer a numeric-like column for values
     const valueCol =
-      columns.find((col) => !isNaN(Number(String(rows[0][col]).replace(/[^0-9.-]/g, "")))) ||
-      columns[1];
-    return { labelCol, valueCol };
+      cols.find((col) => !isNaN(Number(String(rows[0][col]).replace(/[^0-9.-]/g, "")))) ||
+      cols[1] ||
+      cols[0];
+    return { labelCol, valueCol, cols };
+  };
+
+  // Improved number cleaning: handles commas, currency, spaces, and (123) negatives
+  const cleanNumber = (val) => {
+    if (val == null) return 0;
+    let str = String(val).trim();
+    if (/^\(.*\)$/.test(str)) str = "-" + str.replace(/[()]/g, "");
+    str = str.replace(/[^0-9.\-]/g, ""); // keep digits, dot, minus
+    const num = Number(str);
+    return Number.isFinite(num) ? num : 0;
   };
 
   const groupSmallValues = (data, labels, thresholdPercent = 2) => {
-    const total = data.reduce((a, b) => a + b, 0);
+    const total = data.reduce((a, b) => a + b, 0) || 0;
+    if (total === 0) return { labels, data };
     const newData = [];
     const newLabels = [];
     let othersTotal = 0;
@@ -121,7 +148,7 @@ export function File() {
     datasets: [
       {
         label: valueCol,
-        data: rows.map((r) => Number(String(r[valueCol] ?? "").replace(/[^0-9.-]/g, "")) || 0),
+        data: rows.map((r) => cleanNumber(r[valueCol])),
         backgroundColor: [
           "#38E1FF",
           "#B855FF",
@@ -140,18 +167,31 @@ export function File() {
     if (!file) return setError("Please upload a file before visualizing.");
 
     try {
-      const rows = await parseExcel(file);
-      if (!rows.length) return setError("Excel file is empty or unreadable.");
+      const parsed = await parseExcel(file);
+      if (!parsed.length) return setError("Excel file is empty or unreadable.");
 
-      const { labelCol, valueCol } = detectColumns(rows);
-      if (!labelCol || !valueCol) return setError("No suitable columns found.");
+      // detect sensible defaults
+      const { labelCol, valueCol, cols } = detectColumns(parsed);
+      setRows(parsed);
+      setColumns(cols);
+      setXCol(labelCol);
+      setYCol(valueCol);
 
-      setChartData(createChartData(rows, labelCol, valueCol));
+      // build initial chart data and open popup
+      setChartData(createChartData(parsed, labelCol, valueCol));
       setShowPopup(true);
     } catch (err) {
-      setError(err);
+      setError(typeof err === "string" ? err : "Failed to parse file.");
     }
   };
+
+  // Recompute chart data when user changes chart axes (without changing UI)
+  useEffect(() => {
+    if (rows.length && xCol && yCol) {
+      setChartData(createChartData(rows, xCol, yCol));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rows, xCol, yCol]);
 
   const renderChart = (type, title, data, options = {}) => {
     const ChartComp = { Bar, Line, Pie }[type] || Bar;
@@ -178,7 +218,7 @@ export function File() {
   return (
     <>
       <div className="flex flex-col items-center p-10">
-        {/* Upload Area */}
+        {/* Upload Area — unchanged */}
         <div
           className="flex flex-col items-center gap-4 border-2 border-dashed border-purple-500 rounded-2xl p-8 w-full max-w-[360px] sm:max-w-md bg-white/10 backdrop-blur-lg text-white shadow-lg hover:shadow-purple-500/40 hover:scale-105 transition-all"
           onDrop={handleDrop}
@@ -216,7 +256,7 @@ export function File() {
           {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
 
-        {/* Visualize Button */}
+        {/* Visualize Button — unchanged */}
         <button
           onClick={handleVisualize}
           className="mt-6 px-8 py-3 rounded-lg font-bold text-white bg-gradient-to-r from-[#38e1ff] via-[#b855ff] to-[#ff9f40] shadow-lg hover:scale-105 transition-transform"
@@ -226,7 +266,7 @@ export function File() {
         </button>
       </div>
 
-      {/* Charts Popup */}
+      {/* Charts Popup — unchanged container */}
       {showPopup && chartData && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50">
           <div className="bg-white text-black p-6 rounded-xl shadow-lg w-[95%] max-w-[1200px] h-[90vh] overflow-y-auto">
@@ -237,50 +277,142 @@ export function File() {
               </button>
             </div>
 
+            {/* NEW: Minimal controls to choose chart + axes (keeps UI look) */}
+            {columns.length > 0 && (
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <label className="text-sm font-medium">Chart:</label>
+                <select
+                  className="border rounded-lg px-2 py-1"
+                  value={chartType}
+                  onChange={(e) => setChartType(e.target.value)}
+                >
+                  <option value="All">All</option>
+                  <option value="Bar">Bar</option>
+                  <option value="Line">Line</option>
+                  <option value="Pie">Pie</option>
+                  <option value="Doughnut">Doughnut</option>
+                </select>
+
+                <label className="text-sm font-medium ml-2">X-Axis:</label>
+                <select
+                  className="border rounded-lg px-2 py-1"
+                  value={xCol}
+                  onChange={(e) => setXCol(e.target.value)}
+                >
+                  {columns.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+
+                <label className="text-sm font-medium ml-2">Y-Axis:</label>
+                <select
+                  className="border rounded-lg px-2 py-1"
+                  value={yCol}
+                  onChange={(e) => setYCol(e.target.value)}
+                >
+                  {columns.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-4">
-              {/* Bar Chart */}
-              {renderChart("Bar", "Bar Chart", chartData, {
-                scales: {
-                  x: {
-                    ticks: { font: { size: 8 }, maxRotation: 45, minRotation: 45 },
-                    grid: { display: false },
-                  },
-                  y: { beginAtZero: true, ticks: { font: { size: 8 } } },
-                },
-              })}
+              {/* If 'All' keep your original 4 charts; else show only the chosen one */}
+              {chartType === "All" && (
+                <>
+                  {/* Bar Chart */}
+                  {renderChart("Bar", "Bar Chart", chartData, {
+                    scales: {
+                      x: {
+                        ticks: { font: { size: 8 }, maxRotation: 45, minRotation: 45 },
+                        grid: { display: false },
+                      },
+                      y: { beginAtZero: true, ticks: { font: { size: 8 } } },
+                    },
+                  })}
 
-              {/* Pie Chart */}
-              {(() => {
-                const { labels, data } = groupSmallValues(chartData.datasets[0].data, chartData.labels);
-                return renderChart("Pie", "Pie Chart", {
-                  ...chartData,
-                  labels,
-                  datasets: [{ ...chartData.datasets[0], data }],
-                });
-              })()}
+                  {/* Pie Chart (group small) */}
+                  {(() => {
+                    const { labels, data } = groupSmallValues(chartData.datasets[0].data, chartData.labels);
+                    return renderChart("Pie", "Pie Chart", {
+                      ...chartData,
+                      labels,
+                      datasets: [{ ...chartData.datasets[0], data }],
+                    });
+                  })()}
 
-              {/* Line Chart */}
-              {renderChart("Line", "Line Chart", {
-                ...chartData,
-                datasets: chartData.datasets.map((ds) => ({
-                  ...ds,
-                  fill: true,
-                  tension: 0.4,
-                  borderWidth: 2,
-                  backgroundColor: "rgba(75, 192, 192, 0.3)",
-                  borderColor: "rgba(75, 192, 192, 1)",
-                  pointBackgroundColor: "rgba(75, 192, 192, 1)",
-                })),
-              })}
+                  {/* Line Chart */}
+                  {renderChart("Line", "Line Chart", {
+                    ...chartData,
+                    datasets: chartData.datasets.map((ds) => ({
+                      ...ds,
+                      fill: true,
+                      tension: 0.4,
+                      borderWidth: 2,
+                      backgroundColor: "rgba(75, 192, 192, 0.3)",
+                      borderColor: "rgba(75, 192, 192, 1)",
+                      pointBackgroundColor: "rgba(75, 192, 192, 1)",
+                    })),
+                  })}
 
-              {/* Doughnut Chart */}
-              {(() => {
-                const { labels, data } = groupSmallValues(chartData.datasets[0].data, chartData.labels);
-                return renderChart("Pie", "Doughnut Chart", {
-                  ...chartData,
-                  labels,
-                  datasets: [{ ...chartData.datasets[0], data }],
-                }, { cutout: "70%" });
+                  {/* Doughnut Chart (group small) */}
+                  {(() => {
+                    const { labels, data } = groupSmallValues(chartData.datasets[0].data, chartData.labels);
+                    return renderChart(
+                      "Pie",
+                      "Doughnut Chart",
+                      { ...chartData, labels, datasets: [{ ...chartData.datasets[0], data }] },
+                      { cutout: "70%" }
+                    );
+                  })()}
+                </>
+              )}
+
+              {chartType !== "All" && (() => {
+                // Build data once based on current selection
+                const base = chartData;
+                if (chartType === "Bar") {
+                  return renderChart("Bar", "Bar Chart", base, {
+                    scales: {
+                      x: {
+                        ticks: { font: { size: 8 }, maxRotation: 45, minRotation: 45 },
+                        grid: { display: false },
+                      },
+                      y: { beginAtZero: true, ticks: { font: { size: 8 } } },
+                    },
+                  });
+                }
+                if (chartType === "Line") {
+                  return renderChart("Line", "Line Chart", {
+                    ...base,
+                    datasets: base.datasets.map((ds) => ({
+                      ...ds,
+                      fill: true,
+                      tension: 0.4,
+                      borderWidth: 2,
+                      backgroundColor: "rgba(75, 192, 192, 0.3)",
+                      borderColor: "rgba(75, 192, 192, 1)",
+                      pointBackgroundColor: "rgba(75, 192, 192, 1)",
+                    })),
+                  });
+                }
+                if (chartType === "Pie") {
+                  const { labels, data } = groupSmallValues(base.datasets[0].data, base.labels);
+                  return renderChart("Pie", "Pie Chart", {
+                    ...base,
+                    labels,
+                    datasets: [{ ...base.datasets[0], data }],
+                  });
+                }
+                // Doughnut
+                const { labels, data } = groupSmallValues(base.datasets[0].data, base.labels);
+                return renderChart(
+                  "Pie",
+                  "Doughnut Chart",
+                  { ...base, labels, datasets: [{ ...base.datasets[0], data }] },
+                  { cutout: "70%" }
+                );
               })()}
             </div>
           </div>
