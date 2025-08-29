@@ -8,8 +8,6 @@ import Home from "./components/Home";
 import LoginPage from "./components/LoginForm";
 import Nav from './components/Nav';
 import SignupForm from "./components/SignupForm";
-
-
 function App() {
   return (
     <Router>

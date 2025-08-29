@@ -41,10 +41,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen text-white">
+    <div className="flex items-center relative bottom-[150px] justify-center min-h-screen text-white">
       <form
         onSubmit={handleLogin}
-        className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-md border border-white/20"
+        className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-md  border border-white/20"
       >
         <h1 className="text-3xl font-bold mb-6 text-center">Welcome Back 🚀</h1>
 

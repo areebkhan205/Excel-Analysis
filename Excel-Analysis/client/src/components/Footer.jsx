@@ -6,7 +6,7 @@ function Footer() {
       <div className="absolute inset-1  bg-gradient-to-b from-transparent to-purple-900/30 "></div>
 
       {/* Footer Content */}
-      <div className="relative border-t border-gray-800/50 backdrop-blur-sm py-2 h-[101px]  w-[1957px] bg-black/50">
+      <div className="relative border-t border-gray-800/50 backdrop-blur-sm py-2 h-[91px]  w-[1957px] bg-black/50">
         <div className="container mx-auto px-4 py-0">
 
         

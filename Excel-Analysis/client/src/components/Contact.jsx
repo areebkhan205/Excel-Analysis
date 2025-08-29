@@ -7,7 +7,7 @@ function Contact() {
       className="p-[38px] md:p-[0px] relative bottom-[99px] flex items-center flex-col w-full min-h-[103vh] md:min-h-[106vh]  px-4"
     >
       <div
-        className="w-[300px] md:w-[700px] max-w-3xl relative md:top-[66px] top-[-22px] bg-[#10121b] rounded-lg p-8 shadow-lg"
+        className="w-[300px] md:w-[700px] max-w-3xl relative md:top-[206px] top-[-22px] bg-[#10121b] rounded-lg p-8 shadow-lg"
       >
         <form
           action="https://api.web3forms.com/submit"

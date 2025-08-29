@@ -68,89 +68,136 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="p-6 text-white min-h-screen relative bottom-[90px] ">
-      <h1 className="text-4xl font-extrabold mb-10 text-center bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent drop-shadow-lg">
+    <div className="p-4 md:p-6 text-white min-h-screen relative bottom-[90px]">
+      {/* Heading */}
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-6 md:mb-10 text-center bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent drop-shadow-lg">
         🚀 Admin Control Center
       </h1>
 
-      {/* Stats */}
-      <div className=" flex flex-col md:flex-row items-center justify-center gap-8 mb-12">
-        <div className="p-6 rounded-2xl bg-white/10 backdrop-blur-lg shadow-lg border border-cyan-500/50 hover:scale-105 transition-transform duration-300">
-          <div className="flex items-center gap-4">
-            <Users size={36} className="text-cyan-400" />
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
+        {/* Users */}
+        <div className="p-4 md:p-6 rounded-2xl bg-white/10 backdrop-blur-lg shadow-lg border border-cyan-500/50 hover:scale-[1.03] transition-transform duration-300">
+          <div className="flex items-center gap-3 md:gap-4">
+            <Users size={28} className="md:w-9 md:h-9 text-cyan-400" />
             <div>
-              <h2 className="text-lg font-semibold text-gray-300">Total Users</h2>
-              <p className="text-3xl font-bold text-white">{users.length.toLocaleString()}</p>
+              <h2 className="text-xs sm:text-sm md:text-lg font-semibold text-gray-300">
+                Total Users
+              </h2>
+              <p className="text-lg sm:text-xl md:text-3xl font-bold text-white">
+                {users.length.toLocaleString()}
+              </p>
             </div>
           </div>
         </div>
 
-        <div className="p-6 h-[100px] rounded-2xl bg-white/10 backdrop-blur-lg shadow-lg border border-purple-500/50 hover:scale-105 transition-transform duration-300">
-          <div className="flex items-center gap-4">
-            <Shield size={36} className="text-purple-400" />
+        {/* Admins */}
+        <div className="p-4 md:p-6 rounded-2xl bg-white/10 backdrop-blur-lg shadow-lg border border-purple-500/50 hover:scale-[1.03] transition-transform duration-300">
+          <div className="flex items-center gap-3 md:gap-4">
+            <Shield size={28} className="md:w-9 md:h-9 text-purple-400" />
             <div>
-              <h2 className="text-lg font-semibold text-gray-300">Admins</h2>
-              <p className="text-3xl font-bold text-white">
+              <h2 className="text-xs sm:text-sm md:text-lg font-semibold text-gray-300">
+                Admins
+              </h2>
+              <p className="text-lg sm:text-xl md:text-3xl font-bold text-white">
                 {users.filter((u) => u.role === "admin").length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-lg shadow-lg border border-green-500/50 hover:scale-105 transition-transform duration-300">
-          <div className="flex items-center gap-4">
-            <FileText size={26} className="text-green-400" />
+        {/* Uploads */}
+        <div className="p-4 md:p-6 rounded-2xl bg-white/10 backdrop-blur-lg shadow-lg border border-green-500/50 hover:scale-[1.03] transition-transform duration-300">
+          <div className="flex items-center gap-3 md:gap-4">
+            <FileText size={24} className="md:w-8 md:h-8 text-green-400" />
             <div>
-              <h2 className="text-lg font-semibold text-gray-300">Uploads</h2>
-              <p className="text-3xl font-bold text-white">{uploads.length}</p>
+              <h2 className="text-xs sm:text-sm md:text-lg font-semibold text-gray-300">
+                Uploads
+              </h2>
+              <p className="text-lg sm:text-xl md:text-3xl font-bold text-white">
+                {uploads.length}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Users Table */}
-      <h2 className="text-2xl font-semibold mb-4 text-cyan-400">Registered Users</h2>
+      <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4 text-cyan-400">
+        Registered Users
+      </h2>
+
+      {/* ✅ Responsive wrapper */}
       <div className="overflow-x-auto rounded-2xl shadow-lg border border-white/10 backdrop-blur-lg">
-        <table className="min-w-full bg-white/5 text-white">
-          <thead>
+        <table className="w-full text-xs sm:text-sm md:text-base bg-white/5 text-white">
+          {/* Hide header on mobile */}
+          <thead className="hidden sm:table-header-group">
             <tr className="bg-gradient-to-r from-cyan-700/50 to-purple-700/50 text-left">
-              <th className="p-3">Email</th>
-              <th className="p-3">Role</th>
-              <th className="p-3">Created At</th>
-              <th className="p-3 text-center">Actions</th>
+              <th className="p-2 sm:p-3">Email</th>
+              <th className="p-2 sm:p-3">Role</th>
+              <th className="p-2 sm:p-3">Created At</th>
+              <th className="p-2 sm:p-3 text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {users.map((u) => (
               <tr
                 key={u.id}
-                className="border-b border-white/10 hover:bg-white/10 transition"
+                className="block sm:table-row border sm:border-0 mb-4 sm:mb-0 rounded-lg sm:rounded-none bg-gray-900/50 sm:bg-transparent"
               >
-                <td className="p-3">{u.email}</td>
-                <td className="p-3">
+                {/* Email */}
+                <td className="block sm:table-cell p-2 sm:p-3 break-words">
+                  <span className="sm:hidden font-semibold text-cyan-400">
+                    Email:{" "}
+                  </span>
+                  <span className="block truncate" title={u.email}>
+                    {u.email}
+                  </span>
+                </td>
+
+                {/* Role Select */}
+                <td className="block sm:table-cell p-2 sm:p-3">
+                  <span className="sm:hidden font-semibold text-cyan-400">
+                    Role:{" "}
+                  </span>
                   <select
                     value={u.role}
                     onChange={(e) => handleChangeRole(u.id, e.target.value)}
-                    className="bg-gray-800/70 border border-white/20 p-1 rounded-lg focus:outline-none"
+                    className="bg-gray-800/70 border border-white/20 px-2 py-1 rounded-lg text-xs sm:text-sm focus:outline-none w-full sm:w-auto"
                   >
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
                   </select>
                 </td>
-                <td className="p-3">{formatDate(u.createdAt)}</td>
-                <td className="p-3 text-center">
+
+                {/* Date */}
+                <td className="block sm:table-cell p-2 sm:p-3 whitespace-nowrap">
+                  <span className="sm:hidden font-semibold text-cyan-400">
+                    Created At:{" "}
+                  </span>
+                  {formatDate(u.createdAt)}
+                </td>
+
+                {/* Delete */}
+                <td className="block sm:table-cell p-2 sm:p-3 text-center">
+                  <span className="sm:hidden font-semibold text-cyan-400">
+                    Actions:{" "}
+                  </span>
                   <button
                     onClick={() => handleDeleteUser(u.id)}
                     className="bg-red-500 hover:bg-red-600 p-2 rounded-lg shadow-md"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={14} className="sm:w-[18px] sm:h-[18px]" />
                   </button>
                 </td>
               </tr>
             ))}
             {users.length === 0 && (
               <tr>
-                <td colSpan="4" className="text-center py-4 text-gray-400">
+                <td
+                  colSpan="4"
+                  className="text-center py-4 text-gray-400 text-sm"
+                >
                   No users found.
                 </td>
               </tr>
